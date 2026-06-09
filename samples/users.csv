@@ -1,0 +1,4 @@
+name,email,credential,system_name
+John Doe,john.doe@company.com,TempPass@123,Company Portal
+Jane Smith,jane.smith@company.com,SecureKey#456,HR System
+Bob Johnson,bob.johnson@company.com,Init@789,Finance Portal

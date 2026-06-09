@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
+    .container { max-width: 620px; margin: auto; background: #fff; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .header { background: #e65100; color: #fff; padding: 24px 32px; }
+    .header h1 { margin: 0; font-size: 20px; }
+    .body { padding: 28px 32px; color: #333; font-size: 14px; }
+    .alert-box { background: #fff3e0; border-left: 4px solid #e65100; padding: 14px 18px; border-radius: 0 4px 4px 0; margin: 20px 0; }
+    .info-box { background: #f5f5f5; border-radius: 4px; padding: 12px 16px; margin: 16px 0; }
+    .info-box table { width: 100%; border-collapse: collapse; }
+    .info-box td { padding: 5px 0; }
+    .info-box td:first-child { font-weight: bold; color: #555; width: 40%; }
+    .footer { background: #f8f9fa; padding: 14px 32px; font-size: 11px; color: #999; border-top: 1px solid #eee; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>&#x23F0; Credential Expiry Notice</h1>
+    </div>
+    <div class="body">
+      <p>Dear <strong>{{ recipient_name }}</strong>,</p>
+
+      <div class="alert-box">
+        <strong>Action Required:</strong> Your temporary credential for <strong>{{ system_name }}</strong>
+        will expire on <strong>{{ expiry_date }}</strong>.
+      </div>
+
+      <div class="info-box">
+        <table>
+          <tr><td>System</td><td>{{ system_name }}</td></tr>
+          <tr><td>Expiry Date</td><td><strong>{{ expiry_date }}</strong></td></tr>
+          <tr><td>Distribution ID</td><td><code>{{ dist_id }}</code></td></tr>
+        </table>
+      </div>
+
+      <p>Please contact IT Operations to request a credential renewal before the expiry date to avoid loss of access.</p>
+    </div>
+    <div class="footer">
+      Distribution ID: {{ dist_id }} &nbsp;|&nbsp; Secure Credential Mailer &nbsp;|&nbsp; IT Operations
+    </div>
+  </div>
+</body>
+</html>
