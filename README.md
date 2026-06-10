@@ -62,13 +62,24 @@ pip install -r requirements.txt
 
 # Configure
 cp .env.example .env
-# Edit .env with SMTP settings
+# Edit .env with SMTP settings and FERNET_KEY
 
-# Run single distribution
+# Generate encryption key (run once)
+python mailer.py --keygen
+
+# Run single distribution (CLI)
 python mailer.py --user "John Doe" --email "john@company.com" --credential "TempPass@123"
 
 # Run bulk from CSV
-python mailer.py --bulk users.csv
+python mailer.py --bulk samples/users.csv
+
+# Start REST API
+uvicorn api:app --host 0.0.0.0 --port 8000
+
+# Start web UI (requires .NET 8 SDK)
+cd web/CredentialPortal
+dotnet run
+# Open http://localhost:5000  (default login: itops / changeme)
 ```
 
 ---
@@ -77,18 +88,29 @@ python mailer.py --bulk users.csv
 
 ```
 secure-credential-mailer/
-├── mailer.py               # Main entry point (CLI)
+├── mailer.py               # CLI entry point
+├── api.py                  # FastAPI REST wrapper
 ├── core/
 │   ├── encryptor.py        # Fernet encryption handler
 │   ├── splitter.py         # Two-email split logic
 │   └── smtp_client.py      # Email delivery
 ├── templates/
 │   ├── email_part1.html    # Username/identity email template
-│   └── email_part2.html    # Credential email template
+│   ├── email_part2.html    # Credential email template
+│   └── expiry_reminder.html
 ├── audit/
-│   └── logger.py           # Compliance audit logging
-├── web/                    # Optional .NET web UI
-│   └── CredentialPortal/
+│   └── logger.py           # Compliance audit logging (SQLite)
+├── web/
+│   └── CredentialPortal/   # ASP.NET Razor Pages web UI
+│       ├── Pages/
+│       │   ├── Index.cshtml      # Distribution form
+│       │   ├── Audit.cshtml      # Audit log table
+│       │   └── Login.cshtml      # Auth
+│       ├── Services/
+│       │   └── MailerApiClient.cs
+│       └── Models/
+├── samples/
+│   └── users.csv
 ├── .env.example
 ├── requirements.txt
 └── README.md

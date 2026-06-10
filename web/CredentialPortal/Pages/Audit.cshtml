@@ -1,0 +1,89 @@
+@page
+@model CredentialPortal.Pages.AuditModel
+@{
+    ViewData["Title"] = "Audit Log";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">📋 Distribution Audit Log</h4>
+    <form method="post" asp-page-handler="ExportReport">
+        <button type="submit" class="btn btn-outline-secondary btn-sm">Export CSV</button>
+    </form>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.ExportMessage))
+{
+    <div class="alert alert-success py-2">@Model.ExportMessage</div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Distribution ID</th>
+                        <th>Recipient</th>
+                        <th>System</th>
+                        <th>Created</th>
+                        <th>Expiry</th>
+                        <th>Part 1</th>
+                        <th>Part 2</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.Records)
+                    {
+                        <tr>
+                            <td><code class="small">@r.Id</code></td>
+                            <td>
+                                <div class="fw-semibold">@r.RecipientName</div>
+                                <small class="text-muted">@r.RecipientEmail</small>
+                            </td>
+                            <td>@r.SystemName</td>
+                            <td><small>@r.CreatedAt</small></td>
+                            <td><small>@r.ExpiryDate</small></td>
+                            <td>
+                                <span class="badge bg-@(r.Part1Status == "SENT" ? "success" : r.Part1Status == "FAILED" ? "danger" : "warning text-dark")">
+                                    @r.Part1Status
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-@(r.Part2Status == "SENT" ? "success" : r.Part2Status == "FAILED" ? "danger" : "warning text-dark")">
+                                    @r.Part2Status
+                                </span>
+                            </td>
+                            <td>
+                                @if (r.CompletedAt != null)
+                                {
+                                    <span class="badge bg-success">Complete</span>
+                                }
+                                else if (!string.IsNullOrEmpty(r.ErrorInfo))
+                                {
+                                    <span class="badge bg-danger" title="@r.ErrorInfo">Failed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Records.Any())
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">No distributions yet.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @if (Model.Records.Any())
+    {
+        <div class="card-footer text-muted small">
+            Showing @Model.Records.Count distribution(s).
+        </div>
+    }
+</div>

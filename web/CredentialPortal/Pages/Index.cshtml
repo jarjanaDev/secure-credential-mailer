@@ -1,0 +1,73 @@
+@page
+@model CredentialPortal.Pages.IndexModel
+@{
+    ViewData["Title"] = "Distribute Credentials";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">🔐 Distribute Credentials</h5>
+            </div>
+            <div class="card-body p-4">
+                @if (Model.Result != null)
+                {
+                    <div class="alert alert-@(Model.Result.Success ? "success" : "danger") d-flex align-items-center">
+                        <span>@Model.Result.Message</span>
+                    </div>
+                }
+                <form method="post" id="distributeForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Recipient Full Name <span class="text-danger">*</span></label>
+                        <input name="name" type="text" class="form-control"
+                               value="@Model.Input.Name" placeholder="John Doe" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Recipient Email <span class="text-danger">*</span></label>
+                        <input name="email" type="email" class="form-control"
+                               value="@Model.Input.Email" placeholder="john@@company.com" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Temporary Credential <span class="text-danger">*</span></label>
+                        <input name="credential" type="text" class="form-control"
+                               placeholder="TempPass@@123" autocomplete="off" required />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">System / Application</label>
+                            <input name="systemName" type="text" class="form-control"
+                                   value="@Model.Input.SystemName" placeholder="Company Portal" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Expires in (days)</label>
+                            <input name="expiryDays" type="number" class="form-control"
+                                   value="@Model.Input.ExpiryDays" min="1" max="90" placeholder="7" />
+                        </div>
+                    </div>
+                    <div class="d-grid mt-2">
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                            Send Split-Delivery Emails
+                        </button>
+                    </div>
+                </form>
+                <div class="mt-3 p-3 bg-light rounded small text-muted">
+                    <strong>How it works:</strong> Two emails are sent automatically —
+                    Part&nbsp;1 (account details) then Part&nbsp;2 (encrypted credential)
+                    with a <strong>@Model.DelaySeconds-second enforced delay</strong> between them.
+                    Neither email alone contains enough to authenticate.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+document.getElementById('distributeForm').addEventListener('submit', function () {
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Sending... (~@(Model.DelaySeconds)s enforced delay)';
+});
+</script>
+}
